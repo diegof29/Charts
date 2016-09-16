@@ -239,11 +239,6 @@ public class XAxisRenderer: AxisRendererBase
                             position.x -= width / 2.0
                         }
                     }
-                    else if (i == 0)
-                    { // avoid clipping of the first
-                        let width = labelns.boundingRectWithSize(labelMaxSize, options: .UsesLineFragmentOrigin, attributes: labelAttrs, context: nil).size.width
-                        position.x += width / 2.0
-                    }
                 }
                 
                 drawLabel(context: context,
