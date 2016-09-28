@@ -67,7 +67,12 @@ public class YAxisRendererHorizontalBarChart: YAxisRenderer
             return
         }
         
-        let lineHeight = yAxis.labelFont.lineHeight
+        let angle: CGFloat = -45
+        let longestLabel = yAxis.getLongestLabel()
+        
+        let labelSize = longestLabel.sizeWithAttributes([NSFontAttributeName: yAxis.labelFont])
+        let labelRotatedSize = ChartUtils.sizeOfRotatedRectangle(labelSize, degrees: angle)
+
         let baseYOffset: CGFloat = 2.5
         
         let dependency = yAxis.axisDependency
@@ -90,23 +95,24 @@ public class YAxisRendererHorizontalBarChart: YAxisRenderer
         {
             if (labelPosition == .OutsideChart)
             {
-                yPos = viewPortHandler.contentBottom + lineHeight + baseYOffset
+                yPos = viewPortHandler.contentBottom + labelRotatedSize.height + baseYOffset
             }
             else
             {
-                yPos = viewPortHandler.contentBottom + lineHeight + baseYOffset
+                yPos = viewPortHandler.contentBottom + labelRotatedSize.height + baseYOffset
             }
         }
         
         // For compatibility with Android code, we keep above calculation the same,
         // And here we pull the line back up
-        yPos -= lineHeight
+//        yPos -= labelRotatedSize.height
         
         drawYLabels(
             context: context,
             fixedPosition: yPos,
             positions: transformedPositions(),
-            offset: yAxis.yOffset)
+            offset: yAxis.yOffset,
+            angle: angle)
     }
     
     private var _axisLineSegmentsBuffer = [CGPoint](count: 2, repeatedValue: CGPoint())
@@ -161,7 +167,8 @@ public class YAxisRendererHorizontalBarChart: YAxisRenderer
         context context: CGContext,
                 fixedPosition: CGFloat,
                 positions: [CGPoint],
-                offset: CGFloat)
+                offset: CGFloat,
+                angle: CGFloat)
     {
         guard let
             yAxis = axis as? YAxis
@@ -178,13 +185,15 @@ public class YAxisRendererHorizontalBarChart: YAxisRenderer
             {
                 return
             }
-            
+        
             ChartUtils.drawText(
                 context: context,
                 text: text,
                 point: CGPoint(x: positions[i].x, y: fixedPosition - offset),
-                align: .Center,
-                attributes: [NSFontAttributeName: labelFont, NSForegroundColorAttributeName: labelTextColor])
+                attributes: [NSFontAttributeName: labelFont, NSForegroundColorAttributeName: labelTextColor],
+                anchor: CGPoint(x: 1.0, y: 1.0),
+                angleRadians: angle * ChartUtils.Math.FDEG2RAD
+            )
         }
     }
     
