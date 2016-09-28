@@ -231,7 +231,10 @@ public class XAxisRenderer: AxisRendererBase
                     // avoid clipping of the last
                     if (i == xAxis.entryCount - 1 && xAxis.entryCount > 1)
                     {
-                        let width = labelns.boundingRectWithSize(labelMaxSize, options: .UsesLineFragmentOrigin, attributes: labelAttrs, context: nil).size.width
+                        let labelSize = labelns.boundingRectWithSize(labelMaxSize, options: .UsesLineFragmentOrigin, attributes: labelAttrs, context: nil).size
+                        let labelRotatedSize = ChartUtils.sizeOfRotatedRectangle(labelSize, degrees: xAxis.labelRotationAngle)
+                        
+                        let width = labelRotatedSize.width
                         
                         if (width > viewPortHandler.offsetRight * 2.0
                             && position.x + (width - (width * anchor.x)) > viewPortHandler.chartWidth)
