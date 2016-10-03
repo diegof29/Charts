@@ -236,10 +236,12 @@ public class XAxisRenderer: AxisRendererBase
                         
                         let width = labelRotatedSize.width
                         
+                        let labelXPos = position.x + (width - (width * anchor.x))
+                        
                         if (width > viewPortHandler.offsetRight * 2.0
-                            && position.x + (width - (width * anchor.x)) > viewPortHandler.chartWidth)
+                            && labelXPos > viewPortHandler.chartWidth)
                         {
-                            position.x -= width / 2.0
+                            position.x -= (labelXPos - viewPortHandler.chartWidth)
                         }
                     }
                 }
