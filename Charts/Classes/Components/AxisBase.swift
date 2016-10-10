@@ -41,6 +41,8 @@ public class AxisBase: ComponentBase
     public var drawGridLinesEnabled = true
     public var drawAxisLineEnabled = true
     
+    public var forcedIntervalValue: CGFloat? = nil
+    
     /// flag that indicates of the labels of this axis should be drawn or not
     public var drawLabelsEnabled = true
     

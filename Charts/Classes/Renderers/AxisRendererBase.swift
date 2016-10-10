@@ -115,7 +115,7 @@ public class AxisRendererBase: Renderer
         {
             rawInterval = range > 0.0 && !isinf(range) ? range : 1.0
         }
-        var interval = ChartUtils.roundToNextSignificant(number: Double(rawInterval))
+        var interval = axis.forcedIntervalValue != nil ? Double(axis.forcedIntervalValue!) : ChartUtils.roundToNextSignificant(number: Double(rawInterval))
         
         // If granularity is enabled, then do not allow the interval to go below specified granularity.
         // This is used to avoid repeated values when rounding values for display.
