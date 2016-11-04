@@ -78,6 +78,12 @@ public class AxisBase: ComponentBase
     /// the number of entries the legend contains
     public var entryCount: Int { return entries.count; }
     
+    /// Extra spacing for `axisMinimum` to be added to automatically calculated `axisMinimum`
+    public var spaceMin: Double = 0.0
+    
+    /// Extra spacing for `axisMaximum` to be added to automatically calculated `axisMaximum`
+    public var spaceMax: Double = 0.0
+
     /// the number of y-label entries the y-labels should have
     ///
     /// **default**: 6
@@ -348,8 +354,8 @@ public class AxisBase: ComponentBase
     public func calculate(min dataMin: Double, max dataMax: Double)
     {
         // if custom, use value as is, else use data value
-        var min = _customAxisMin ? _axisMinimum : dataMin
-        var max = _customAxisMax ? _axisMaximum : dataMax
+        var min = _customAxisMin ? _axisMinimum : (dataMin - spaceMin)
+        var max = _customAxisMax ? _axisMaximum : (dataMax + spaceMax)
         
         // temporary range (before calculations)
         let range = abs(max - min)
