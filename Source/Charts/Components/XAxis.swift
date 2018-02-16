@@ -25,6 +25,8 @@ open class XAxis: AxisBase
         case bottomInside
     }
     
+    open var maxLabelWidth: CGFloat? = nil
+    
     /// width of the x-axis labels in pixels - this is automatically calculated by the `computeSize()` methods in the renderers
     @objc open var labelWidth = CGFloat(1.0)
     

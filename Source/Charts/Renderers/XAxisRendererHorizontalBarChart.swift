@@ -64,9 +64,17 @@ open class XAxisRendererHorizontalBarChart: XAxisRenderer
        
         let longest = xAxis.getLongestLabel() as NSString
         
-        let labelSize = longest.size(withAttributes: [NSAttributedStringKey.font: xAxis.labelFont])
-        
+        var labelSize = longest.size(withAttributes: [NSAttributedStringKey.font: xAxis.labelFont])
+
         let labelWidth = floor(labelSize.width + xAxis.xOffset * 3.5)
+        
+        if let maxLabelWidth = xAxis.maxLabelWidth {
+            
+            let size = CGSize(width: min(maxLabelWidth, labelSize.width), height: CGFloat.greatestFiniteMagnitude)
+            
+            labelSize = (longest as NSString).boundingRect(with: size, options: NSString.DrawingOptions.usesLineFragmentOrigin, attributes: [NSAttributedStringKey.font: xAxis.labelFont], context: nil).size
+        }
+        
         let labelHeight = labelSize.height
         let labelRotatedSize = CGSize(width: labelSize.width, height: labelHeight).rotatedBy(degrees: xAxis.labelRotationAngle)
 
@@ -127,7 +135,15 @@ open class XAxisRendererHorizontalBarChart: XAxisRenderer
         let centeringEnabled = xAxis.isCenterAxisLabelsEnabled
         
         // pre allocate to save performance (dont allocate in loop)
+        let valueToPixelMatrix = transformer.valueToPixelMatrix
+        
         var position = CGPoint(x: 0.0, y: 0.0)
+        
+        var labelMaxSize = CGSize()
+        
+        if xAxis.isWordWrapEnabled {
+            labelMaxSize.width = xAxis.maxLabelWidth ?? xAxis.wordWrapWidthPercent * valueToPixelMatrix.a
+        }
         
         for i in stride(from: 0, to: xAxis.entryCount, by: 1)
         {
@@ -156,6 +172,7 @@ open class XAxisRendererHorizontalBarChart: XAxisRenderer
                         x: pos,
                         y: position.y,
                         attributes: [NSAttributedStringKey.font: labelFont, NSAttributedStringKey.foregroundColor: labelTextColor],
+                        constrainedToSize: labelMaxSize,
                         anchor: anchor,
                         angleRadians: labelRotationAngleRadians)
                 }
